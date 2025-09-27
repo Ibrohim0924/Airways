@@ -1,15 +1,22 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Admin } from './entities/admin.entity';
+import { Flight } from 'src/flights/entities/flight.entity';
 import { AdminService } from './admin.service';
 import { AdminController } from './admin.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { News } from 'src/news/entities/news.entity';
-import { Flight } from 'src/flights/entities/flight.entity';
-import { Admin } from './entities/admin.entity';
+import { JwtModule } from '@nestjs/jwt';
+import { SuperAdminAuthModule } from './superadmin.module';
+import { NewsModule } from 'src/news/news.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([News, Flight, Admin])],
+  imports: [
+    TypeOrmModule.forFeature([Admin, Flight]),
+    JwtModule,
+    SuperAdminAuthModule,
+    forwardRef(() => NewsModule),
+  ],
   controllers: [AdminController],
   providers: [AdminService],
-  exports: [AdminService]
+  exports: [AdminService],
 })
 export class AdminModule {}

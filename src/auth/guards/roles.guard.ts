@@ -2,13 +2,12 @@ import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from "@
 import { Reflector } from "@nestjs/core/services/reflector.service";
 import { ROLES_KEY } from "src/decorators/roles.decorator";
 
-
 @Injectable()
 export class RolesGuard implements CanActivate {
     constructor(private reflector: Reflector) { }
 
     canActivate(context: ExecutionContext): boolean {
-    const requiredRoles = this.reflector.getAllAndOverride<string[]>(ROLES_KEY, [
+        const requiredRoles = this.reflector.getAllAndOverride<string[]>(ROLES_KEY, [
             context.getHandler(),
             context.getClass(),
         ]);
@@ -21,10 +20,10 @@ export class RolesGuard implements CanActivate {
             throw new ForbiddenException('Foydalanuvchi topilmadi');
         }
 
-        const hashRole = requiredRoles.includes(user.role);
-        if (!hashRole) {
+        const hasRole = requiredRoles.includes(user.role);
+        if (!hasRole) {
             throw new ForbiddenException('Sizda bunday huquq yo‘q');
         }
-        return true
+        return true;
     }
 }

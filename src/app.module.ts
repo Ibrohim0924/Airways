@@ -9,6 +9,11 @@ import { TicketsModule } from './tickets/tickets.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { SeatsModule } from './seats/seats.module';
 import * as dotenv from 'dotenv';
+import { SuperAdminAuthModule } from './admin/superadmin.module';
+import { LoyaltyprogramModule } from './loyaltyprogram/loyaltyprogram.module';
+import { AiraportModule } from './airaport/airaport.module';
+import { CountryModule } from './country/country.module';
+import { CityModule } from './city/city.module';
 
 dotenv.config();
 
@@ -31,6 +36,12 @@ dotenv.config();
     NewsModule,
     TicketsModule,
     ReviewsModule,
-    SeatsModule],
+    SeatsModule,
+    SuperAdminAuthModule,
+    LoyaltyprogramModule,
+    AiraportModule,
+    CountryModule,
+    CityModule
+  ],
 })
 export class AppModule {}

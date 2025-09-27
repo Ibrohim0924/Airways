@@ -1,18 +1,16 @@
-import { IsNotEmpty, IsString, IsDateString, IsEnum, IsNumber, IsOptional } from 'class-validator';
-import { PlaneModel } from 'src/common/planemodel.enum';
+import { IsDateString, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
+import { PlaneModel } from "src/common/planemodel.enum";
 
 export class CreateFlightDto {
   @IsString()
   @IsNotEmpty()
-  flight_number: string;
+  flightNumber: string;
 
-  @IsString()
-  @IsNotEmpty()
-  departureAirport: string;
+  @IsNumber()
+  departureAirportId: number;
 
-  @IsString()
-  @IsNotEmpty()
-  arrivalAirport: string;
+  @IsNumber()
+  arrivalAirportId: number;
 
   @IsDateString()
   departureTime: Date;
@@ -28,14 +26,21 @@ export class CreateFlightDto {
   @IsDateString()
   returnArrivalTime?: Date;
 
+  @IsOptional()
   @IsNumber()
-  @IsNotEmpty()
-  OneWayprice: number;
+  oneWayPrice?: number;
 
   @IsOptional()
   @IsNumber()
-  RoundTripPrice?: number;
+  roundTripPrice?: number;
 
   @IsEnum(PlaneModel)
   planeModel: PlaneModel;
+
+  @IsOptional()
+  @IsString()
+  status?: string;
+
+  @IsNumber()
+  createdById: number;
 }

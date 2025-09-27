@@ -1,48 +1,46 @@
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { PlaneModel } from "src/common/planemodel.enum";
-import {  Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Airport } from "src/airaport/entities/airaport.entity";
 import { Admin } from "src/admin/entities/admin.entity";
-
 
 @Entity('flights')
 export class Flight {
-
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column({ type: 'varchar', unique: true, length: 10 })
-    flight_number: string;
+    flightNumber: string;
 
-    @Column({ type: 'varchar', length: 100 })
-    departureAirport: string;
+    @ManyToOne(() => Airport, (airport) => airport.departures, { eager: true })
+    departureAirport: Airport;
 
-    @Column({ type: 'varchar', length: 100 })
-    arrivalAirport: string;
-
-    @Column({ type: 'timestamp' })
-    departureTime: Date; //ketish vaqti
+    @ManyToOne(() => Airport, (airport) => airport.arrivals, { eager: true })
+    arrivalAirport: Airport;
 
     @Column({ type: 'timestamp' })
-    arrivalTime: Date;  //borib qo'nish vaqti
+    departureTime: Date;
+
+    @Column({ type: 'timestamp' })
+    arrivalTime: Date;
 
     @Column({ type: 'timestamp', nullable: true })
-    returnDepartureTime: Date; //qaytish vaqti
+    returnDepartureTime: Date;
 
     @Column({ type: 'timestamp', nullable: true })
-    returnArrivalTime: Date;  //qaytib qo'nish vaqti
+    returnArrivalTime: Date;
 
     @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-    OneWayprice: number;
+    oneWayPrice: number;
 
     @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-    RoundTripPrice: number;
+    roundTripPrice: number;
 
     @Column({ type: 'enum', enum: PlaneModel })
     planeModel: PlaneModel;
 
     @Column({ type: 'varchar', length: 100, default: 'planned' })
-    status: string //planned, cancelled, delayed, departed, arrived
+    status: string; // planned, cancelled, delayed, departed, arrived
 
-    @ManyToOne(() => Admin, admin => admin.flight, {eager: true})
+    @ManyToOne(() => Admin, (admin) => admin.flight, { eager: true })
     createdBy: Admin;
 }
-

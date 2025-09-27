@@ -10,8 +10,8 @@ export class FlightsService {
   constructor(@InjectRepository(Flight) private flightsRepository: Repository<Flight>) { }
 
   async create(createFlightDto: CreateFlightDto) {
-    const { flight_number, departureTime } = createFlightDto;
-    const checkFlightNumber = await this.flightsRepository.findOne({ where: { flight_number } });
+    const { flightNumber, departureTime } = createFlightDto;
+    const checkFlightNumber = await this.flightsRepository.findOne({ where: { flightNumber } });
     if (checkFlightNumber) {
       throw new ConflictException('Bunday reys allaqachon mavjud');
     }
@@ -40,13 +40,13 @@ export class FlightsService {
   async update(id: number, dto: UpdateFlightDto) {
     const flight = await this.findOne(id);
 
-    if (dto.flight_number && dto.flight_number !== flight.flight_number) {
+    if (dto.flightNumber && dto.flightNumber !== flight.flightNumber) {
       const exists = await this.flightsRepository.findOne({
-        where: { flight_number: dto.flight_number },
+        where: { flightNumber: dto.flightNumber },
       });
 
       if (exists) {
-        throw new ConflictException(`Flight number ${dto.flight_number} is already taken`);
+        throw new ConflictException(`Flight number ${dto.flightNumber} is already taken`);
       }
     }
 

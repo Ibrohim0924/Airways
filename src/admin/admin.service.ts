@@ -46,8 +46,9 @@ export class AdminService {
     return this.adminRepo.save(admin);
   }
 
-  findAll() {
-    return this.adminRepo.find();
+  async findAll() {
+    const admin = await this.adminRepo.find()
+    return admin
   }
 
   async findOne(id: number) {
@@ -93,7 +94,11 @@ export class AdminService {
   }
 
   async remove(id: number) {
-    const admin = await this.findOne(id);
-    return this.adminRepo.remove(admin);
+    const admin = await this.adminRepo.findOne({ where: { id } })
+    if (!admin) {
+      throw new NotFoundException('Admin topilmadi')
+    }
+    await this.adminRepo.delete(id)
+    return { message: "Admin muvaffaqiyatli o'chirildi" }
   }
 }
