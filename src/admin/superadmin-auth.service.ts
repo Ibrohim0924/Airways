@@ -4,12 +4,10 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Admin } from "./entities/admin.entity";
 import { Role } from "src/common/roles.enum";
-import * as bcrypt from 'bcrypt'
-import * as dotenv from 'dotenv'
+import * as bcrypt from 'bcrypt';
+import * as dotenv from 'dotenv';
 
-dotenv.config()
-
-
+dotenv.config();
 
 @Injectable()
 export class SuperAdminAuthService {
@@ -20,21 +18,21 @@ export class SuperAdminAuthService {
     ) { }
 
     async signin(email: string, password: string) {
-        const admin = await this.adminRepo.findOne({ where: { email, role: Role.SUPER_ADMIN } })
+        const admin = await this.adminRepo.findOne({ where: { email, role: Role.SUPER_ADMIN } });
         if (!admin) {
-            throw new UnauthorizedException('SuperAdmin topilmadi')
+            throw new UnauthorizedException('SuperAdmin topilmadi');
         }
 
-        const isPasswordValid = await bcrypt.compare(password, admin.passwordHash)
+        const isPasswordValid = await bcrypt.compare(password, admin.passwordHash);
         if (!isPasswordValid) {
-            throw new UnauthorizedException("Parol noto'g'ri")
+            throw new UnauthorizedException("Parol noto'g'ri");
         }
         const payload = { sub: admin.id, role: admin.role };
 
         return {
             access_token: this.jwtService.sign(payload, {
-                secret: process.env.JWT_ACCESS_TOKEN_SECRET,
-                expiresIn: '30d'
+                secret: process.env.JWT_SUPERADMIN_SECRET,
+                expiresIn: process.env.JWT_SUPERADMIN_EXPIRATION || '30d'
             }),
             admin: {
                 id: admin.id,
@@ -42,6 +40,5 @@ export class SuperAdminAuthService {
                 role: admin.role
             }
         };
-
     }
 }
