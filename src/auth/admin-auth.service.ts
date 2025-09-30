@@ -1,33 +1,32 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
+import { Admin } from "src/admin/entities/admin.entity";
 import { Repository } from "typeorm";
-import { Admin } from "./entities/admin.entity";
-import { Role } from "src/common/roles.enum";
 import * as bcrypt from 'bcrypt'
-import * as dotenv from 'dotenv'
-
-dotenv.config()
-
 
 
 @Injectable()
-export class SuperAdminAuthService {
+export class AdminAuthService {
     constructor(
         @InjectRepository(Admin)
-        private readonly adminRepo: Repository<Admin>,
+        private readonly adminRepository: Repository<Admin>,
         private readonly jwtService: JwtService
     ) { }
 
     async signin(email: string, password: string) {
-        const admin = await this.adminRepo.findOne({ where: { email, role: Role.SUPER_ADMIN } })
+        const admin = await this.adminRepository.findOne({
+            where: { email }
+        })
         if (!admin) {
-            throw new UnauthorizedException('SuperAdmin topilmadi')
+            throw new NotFoundException('Admin topilmadi')
         }
-
+        console.log('Input password:', password);
+        console.log('DB passwordHash:', admin.passwordHash);
         const isPasswordValid = await bcrypt.compare(password, admin.passwordHash)
+
         if (!isPasswordValid) {
-            throw new UnauthorizedException("Parol noto'g'ri")
+            throw new UnauthorizedException("Email yoki parol noto‘g‘ri")
         }
         const payload = { sub: admin.id, role: admin.role };
 
@@ -43,5 +42,7 @@ export class SuperAdminAuthService {
             }
         };
 
+
     }
+
 }

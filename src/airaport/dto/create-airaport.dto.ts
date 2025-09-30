@@ -12,4 +12,8 @@ export class CreateAirportDto {
     @IsString()
     @IsNotEmpty()
     countryId: number;
+
+    @IsString()
+    @IsNotEmpty()
+    cityId: number;
 }

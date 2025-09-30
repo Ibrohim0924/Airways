@@ -7,6 +7,7 @@ import { AdminController } from './admin.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { SuperAdminAuthModule } from './superadmin.module';
 import { NewsModule } from 'src/news/news.module';
+import { CreateSuperAdmin } from 'src/utils/createsuperadmin';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { NewsModule } from 'src/news/news.module';
     forwardRef(() => NewsModule),
   ],
   controllers: [AdminController],
-  providers: [AdminService],
+  providers: [AdminService, CreateSuperAdmin],
   exports: [AdminService],
 })
-export class AdminModule {}
+export class AdminModule { }

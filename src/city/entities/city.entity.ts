@@ -1,5 +1,5 @@
-import { Airport } from "src/airaport/entities/airaport.entity";
-import { Country } from "src/country/entities/country.entity";
+import { Airport } from "../../airaport/entities/airaport.entity";
+import { Country } from "../../country/entities/country.entity";
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 
@@ -12,9 +12,9 @@ export class City {
     @Column({ type: 'varchar', length: 255 })
     name: string;
 
-    @OneToMany(() => Airport, (airport) => airport.city)
+    @OneToMany(() => Airport, (airport) => airport.city, { cascade: true, onDelete: 'CASCADE', onUpdate: 'CASCADE' })
     airports: Airport[];
 
-    @ManyToOne(() => Country, (country) => country.cities, { eager: true, onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+    @ManyToOne(() => Country, (country) => country.cities, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
     country: Country;
 }

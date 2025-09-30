@@ -26,9 +26,8 @@ export class CreateFlightDto {
   @IsDateString()
   returnArrivalTime?: Date;
 
-  @IsOptional()
   @IsNumber()
-  oneWayPrice?: number;
+  oneWayPrice: number;
 
   @IsOptional()
   @IsNumber()

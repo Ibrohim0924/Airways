@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { News } from 'src/news/entities/news.entity';
-import { Role } from 'src/common/roles.enum'; 
-import { Flight } from 'src/flights/entities/flight.entity';
+import { News } from '../../news/entities/news.entity';
+import { Role } from '../../common/roles.enum'; 
+import { Flight } from '../../flights/entities/flight.entity';
 
 @Entity('admins')
 export class Admin {

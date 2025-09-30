@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Admin } from "src/admin/entities/admin.entity";
+import { Admin } from "../../admin/entities/admin.entity";
 
 @Entity('news')
 export class News {

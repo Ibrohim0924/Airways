@@ -17,16 +17,16 @@ export class CountryService {
     }
     const country = this.countryRepo.create(createCountryDto)
     await this.countryRepo.save(country)
-    return { message: 'Mamlakat muvafaqiyatli bajarildi' }
+    return { message: 'Mamlakat muvafaqiyatli yaratildi', country }
   }
 
   async findAll() {
-    const countries = await this.countryRepo.find({ relations: ['airports'] })
+    const countries = await this.countryRepo.find({ relations: ['airports', 'cities'] })
     return countries
   }
 
   async findOne(id: number) {
-    const country = await this.countryRepo.findOne({ where: { id }, relations: ['airports'] })
+    const country = await this.countryRepo.findOne({ where: { id }, relations: ['airports', 'cities'] })
     if (!country) {
       throw new NotFoundException('Mamlakat topilmadi')
     }
@@ -50,11 +50,11 @@ export class CountryService {
   }
 
   async remove(id: number) {
-    const country = await this.findOne(id)
+    const country = await this.countryRepo.findOne({ where: { id } })
     if (!country) {
       throw new NotFoundException('Mamlakat topilmadi')
     }
-    await this.countryRepo.delete(country)
+    await this.countryRepo.remove(country)
     return { message: "Mamlakat muvafaqiyatli o'chirildi" }
   }
 }

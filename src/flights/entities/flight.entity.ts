@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { PlaneModel } from "src/common/planemodel.enum";
-import { Airport } from "src/airaport/entities/airaport.entity";
-import { Admin } from "src/admin/entities/admin.entity";
+import { PlaneModel } from "../../common/planemodel.enum";
+import { Airport } from "../../airaport/entities/airaport.entity";
+import { Admin } from "../../admin/entities/admin.entity";
 
 @Entity('flights')
 export class Flight {

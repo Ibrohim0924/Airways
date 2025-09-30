@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Seat } from './entities/seat.entity';
 import { Repository } from 'typeorm/repository/Repository.js';
 import { Flight } from 'src/flights/entities/flight.entity';
-import { SeatClass } from 'src/common/class.enum';
+import { SeatCapacity, SeatClass } from 'src/common/class.enum';
 
 @Injectable()
 export class SeatsService {
@@ -23,9 +23,18 @@ export class SeatsService {
     const flight = await this.flightRepository.findOne({ where: { id: flightId } });
     if (!flight) throw new NotFoundException('Bunday reys mavjud emas');
 
-    // Klass bo‘yicha limitni tekshirish
     const planeModel = flight.planeModel;
-    const classLimit = SeatClass[planeModel][seatClass];
+    const modelCapacity = SeatCapacity[planeModel];
+
+    if (!modelCapacity) {
+      throw new ConflictException(`${planeModel} modeli uchun joy limiti sozlanmagan`);
+    }
+
+    const classLimit = modelCapacity[seatClass];
+
+    if (classLimit === undefined) {
+      throw new ConflictException(`${seatClass} uchun joy limiti ${planeModel} modelida aniqlanmagan`);
+    }
 
     const existingSeatsCount = await this.seatsRepository.count({
       where: { flight: { id: flightId }, seatClass },
@@ -35,7 +44,6 @@ export class SeatsService {
       throw new ConflictException(`${seatClass} uchun barcha joylar band (${classLimit} ta)`);
     }
 
-    // Seat raqami unikalmi?
     const exists = await this.seatsRepository.findOne({
       where: { flight: { id: flightId }, seatNumber },
     });
@@ -43,7 +51,6 @@ export class SeatsService {
       throw new ConflictException(`Seat ${seatNumber} allaqachon mavjud`);
     }
 
-    // Yangi seat yaratish
     const newSeat = this.seatsRepository.create({
       flight,
       seatNumber,
@@ -62,7 +69,7 @@ export class SeatsService {
   async findOne(id: number) {
     const seat = await this.seatsRepository.findOne({ where: { id }, relations: ['flight'] });
     if (!seat) {
-      throw new NotFoundException('O‘rindiq topilmadi');
+      throw new NotFoundException('O\'rindiq topilmadi');
     }
     return seat;
   }
@@ -86,7 +93,7 @@ export class SeatsService {
   async remove(id: number) {
     const seat = await this.seatsRepository.findOne({ where: { id } });
     if (!seat) {
-      throw new NotFoundException('O‘rindiq topilmadi');
+      throw new NotFoundException('O\'rindiq topilmadi');
     }
     await this.seatsRepository.remove(seat);
     return { message: "O'rindiq muvaffaqiyatli o'chirildi" };

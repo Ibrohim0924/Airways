@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -9,6 +10,7 @@ import * as bcrypt from 'bcrypt';
 import { Admin } from './entities/admin.entity';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
+import { Role } from 'src/common/roles.enum';
 
 @Injectable()
 export class AdminService {
@@ -93,12 +95,22 @@ export class AdminService {
     return this.adminRepo.save(admin);
   }
 
-  async remove(id: number) {
-    const admin = await this.adminRepo.findOne({ where: { id } })
-    if (!admin) {
-      throw new NotFoundException('Admin topilmadi')
+  async remove(id: number, currentUser: Admin) {
+    const adminToDelete = await this.adminRepo.findOne({ where: { id } });
+    if (!adminToDelete) {
+      throw new NotFoundException('Admin topilmadi');
     }
-    await this.adminRepo.delete(id)
-    return { message: "Admin muvaffaqiyatli o'chirildi" }
+
+    if (currentUser.role !== Role.SUPER_ADMIN) {
+      throw new ForbiddenException("Faqat SuperAdmin adminlarni o‘chira oladi");
+    }
+
+    if (adminToDelete.id === currentUser.id) {
+      throw new ForbiddenException("SuperAdmin o‘zini o‘chira olmaydi");
+    }
+
+    await this.adminRepo.remove(adminToDelete);
+    return { message: "Admin muvaffaqiyatli o‘chirildi" };
   }
+
 }

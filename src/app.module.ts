@@ -14,6 +14,7 @@ import { LoyaltyprogramModule } from './loyaltyprogram/loyaltyprogram.module';
 import { AiraportModule } from './airaport/airaport.module';
 import { CountryModule } from './country/country.module';
 import { CityModule } from './city/city.module';
+import { AdminAuthModule } from './auth/admin-auth.module';
 
 dotenv.config();
 
@@ -41,7 +42,8 @@ dotenv.config();
     LoyaltyprogramModule,
     AiraportModule,
     CountryModule,
-    CityModule
+    CityModule,
+    AdminAuthModule
   ],
 })
 export class AppModule {}

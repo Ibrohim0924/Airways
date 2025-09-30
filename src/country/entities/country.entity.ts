@@ -1,5 +1,5 @@
-import { Airport } from "src/airaport/entities/airaport.entity";
-import { City } from "src/city/entities/city.entity";
+import { Airport } from "../../airaport/entities/airaport.entity";
+import { City } from "../../city/entities/city.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 

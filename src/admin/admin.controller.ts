@@ -1,15 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { SuperAdminGuard } from 'src/auth/guards/superadmin.guard';
+import { Roles } from 'src/decorators/roles.decorator';
+import { Role } from 'src/common/roles.enum';
 
 @Controller('admin')
 @UseGuards(SuperAdminGuard)
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(private readonly adminService: AdminService) { }
 
   @Post()
   create(@Body() createAdminDto: CreateAdminDto) {
@@ -32,7 +34,11 @@ export class AdminController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.adminService.remove(+id);
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.SUPER_ADMIN)
+  async remove(@Param('id') id: number, @Req() req) {
+    return this.adminService.remove(+id, req.user);
   }
+
+
 }

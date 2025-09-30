@@ -25,7 +25,7 @@ export class CityService {
     }
     const newCity = this.cityRepo.create({ name: createCityDto.name, country })
     await this.cityRepo.save(newCity)
-    return { message: "Shahar muvafaqiyatli qo'shildi" }
+    return { message: "Shahar muvafaqiyatli qo'shildi", newCity }
   }
 
   async findAll() {
@@ -65,7 +65,7 @@ export class CityService {
 
   async remove(id: number) {
     const city = await this.findOne(id)
-    await this.cityRepo.delete(city)
+    await this.cityRepo.remove(city)
     return { message: "Shahar muvafaqiyatli o'chirildi" };
   }
 }
